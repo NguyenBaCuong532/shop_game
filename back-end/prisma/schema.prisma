@@ -14,8 +14,60 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  name     String?
-  password String?
+  id    Int       @id @default(autoincrement())
+  username  String?   @unique
+  password  String?
+  email     String?   @unique
+  createdAt DateTime @default(now())
+  role      Role?
+  total     Int?
+  accounts  Account[]
+  deposits  Deposit[]
+}
+
+model Game {
+  gameId      Int       @id @default(autoincrement())
+  name        String?
+  image       String?
+  description String?   @map("mô tả")
+  accounts    Account[]
+  payments    Payment[]
+}
+
+model Account {
+  accId      Int       @id @default(autoincrement())
+  gameId     Int?
+  username   String?
+  password   String?
+  price      Float?    @map("giá")
+  status     String?   @map("trạng thái")
+  createdAt  DateTime @default(now())
+  game       Game?     @relation(fields: [gameId], references: [gameId])
+  userId Int?
+  User       User?     @relation(fields: [userId], references: [id])
+  payment    Payment?   @relation(fields: [accId], references: [id])
+}
+
+model Payment {
+  id          Int       @id @default(autoincrement())
+  gameId      Int?
+  accId       Int?
+  description String?   @map("mô tả")
+  image       String?
+  price       Float?    @map("giá")
+  accounts    Account[]
+  game        Game?     @relation(fields: [gameId], references: [gameId])
+}
+
+model Deposit {
+  id          Int       @id @default(autoincrement())
+  userId      Int?
+  depositDate DateTime? @map("ngày nạp")
+  amount      Float?    @map("Số tiền nạp")
+  user        User?     @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  user
+  admin
 }
