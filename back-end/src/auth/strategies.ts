@@ -1,8 +1,7 @@
 import { User } from '@prisma/client'
 import { PrismaClient } from '@prisma/client'
 var passport = require('passport')
-const LocalStrategy = require('passport-local').Strategy;
-
+var LocalStrategy = require('passport-local').Strategy;
 // var bcrypt = require('bcrypt')
 
 const prisma = new PrismaClient()
@@ -35,7 +34,7 @@ export default passport.use(
       //   if(!findUser) throw new Error("User not found");
       //   if(findUser.password !== password) throw new Error("Invalid Credentials");
 
-      const findUser = await prisma.user.findUniqueOrThrow({ where: { username } })
+      const findUser = await prisma.user.findUniqueOrThrow({ where: { username:String(username) } })
       console.log(findUser)
       if (!findUser) throw new Error('User not found')
       if (findUser.password !== password) throw new Error('Invalid Credentials')
